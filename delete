@@ -1,0 +1,59 @@
+
+<?php
+require_once 'core/Gomez_DbConfig.php';
+require_once 'core/model.php';
+
+$applicationID = filter_input(
+    INPUT_GET, 'application_id', FILTER_VALIDATE_INT
+);
+
+if (!$applicationID) {
+    exit("Invalid application ID.");
+}
+
+$application = getApplicationByID($pdo, $applicationID);
+
+if (!$application) {
+    exit("Application not found.");
+}
+
+function e($value) {
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Application</title>
+</head>
+<body>
+
+<h1>Delete Job Application</h1>
+
+<p>Are you sure you want to delete this application?</p>
+
+<p>
+    Applicant:
+    <?= e($application['first_name']) ?>
+    <?= e($application['last_name']) ?>
+</p>
+
+<p>Application ID: <?= e($application['application_id']) ?></p>
+
+<form action="core/handleForms.php" method="POST">
+
+    <input type="hidden" name="application_id"
+           value="<?= e($application['application_id']) ?>">
+
+    <button type="submit" name="deleteApplicationBtn">
+        Yes, Delete Application
+    </button>
+
+</form>
+
+<p><a href="index.php">Cancel</a></p>
+
+</body>
+</html>
