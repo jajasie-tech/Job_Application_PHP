@@ -1,0 +1,115 @@
+
+<?php
+
+require_once 'Gomez_DbConfig.php';
+require_once 'model.php';
+
+function cleanInput($value) {
+    return trim($value ?? "");
+}
+
+function applicationInputsAreValid($fields) {
+    foreach ($fields as $field) {
+        if ($field === "") {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// INSERT APPLICATION
+if (isset($_POST['insertApplicationBtn'])) {
+
+    $firstName = cleanInput($_POST['first_name'] ?? '');
+    $lastName = cleanInput($_POST['last_name'] ?? '');
+    $email = cleanInput($_POST['email'] ?? '');
+    $phone = cleanInput($_POST['phone'] ?? '');
+    $education = cleanInput($_POST['education'] ?? '');
+    $position = cleanInput($_POST['position'] ?? '');
+    $skills = cleanInput($_POST['programming_skills'] ?? '');
+    $experience = cleanInput($_POST['experience'] ?? '');
+
+    $fields = [
+        $firstName, $lastName, $email, $phone,
+        $education, $position, $skills, $experience
+    ];
+
+    if (applicationInputsAreValid($fields)
+        && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        $query = insertApplication(
+            $pdo, $firstName, $lastName, $email,
+            $phone, $education, $position,
+            $skills, $experience
+        );
+
+        if ($query) {
+            header("Location: ../index.php");
+            exit;
+        }
+
+    }
+
+    echo "Insertion failed. Check your inputs.";
+}
+
+// UPDATE APPLICATION
+if (isset($_POST['updateApplicationBtn'])) {
+
+    $applicationID = filter_input(
+        INPUT_POST, 'application_id', FILTER_VALIDATE_INT
+    );
+
+    $firstName = cleanInput($_POST['first_name'] ?? '');
+    $lastName = cleanInput($_POST['last_name'] ?? '');
+    $email = cleanInput($_POST['email'] ?? '');
+    $phone = cleanInput($_POST['phone'] ?? '');
+    $education = cleanInput($_POST['education'] ?? '');
+    $position = cleanInput($_POST['position'] ?? '');
+    $skills = cleanInput($_POST['programming_skills'] ?? '');
+    $experience = cleanInput($_POST['experience'] ?? '');
+
+    $fields = [
+        $firstName, $lastName, $email, $phone,
+        $education, $position, $skills, $experience
+    ];
+
+    if ($applicationID && applicationInputsAreValid($fields)
+        && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+        $query = updateApplication(
+            $pdo, $applicationID, $firstName, $lastName,
+            $email, $phone, $education, $position,
+            $skills, $experience
+        );
+
+        if ($query) {
+            header("Location: ../index.php");
+            exit;
+        }
+    }
+
+    echo "Update failed. Check your inputs.";
+}
+
+// DELETE APPLICATION
+if (isset($_POST['deleteApplicationBtn'])) {
+
+    $applicationID = filter_input(
+        INPUT_POST, 'application_id', FILTER_VALIDATE_INT
+    );
+
+    if ($applicationID) {
+        $query = deleteApplication($pdo, $applicationID);
+
+        if ($query) {
+            header("Location: ../index.php");
+            exit;
+        }
+    }
+
+    echo "Deletion failed.";
+}
+
+?>
