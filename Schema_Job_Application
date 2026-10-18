@@ -1,0 +1,16 @@
+CREATE DATABASE job_application_db; // for DB creation
+
+//for Table creation
+CREATE TABLE job_applications (    
+    application_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    education VARCHAR(150) NOT NULL,
+    position VARCHAR(100) NOT NULL,
+    programming_skills VARCHAR(255) NOT NULL,
+    experience TEXT NOT NULL,
+    date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
