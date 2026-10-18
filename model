@@ -1,0 +1,74 @@
+
+<?php
+
+function insertApplication($pdo, $firstName, $lastName,
+    $email, $phone, $education, $position,
+    $skills, $experience) {
+
+    $sql = "INSERT INTO job_applications
+    (first_name, last_name, email, phone, education,
+     position, programming_skills, experience)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $pdo->prepare($sql);
+
+    return $stmt->execute([
+        $firstName, $lastName, $email, $phone,
+        $education, $position, $skills, $experience
+    ]);
+}
+
+function seeAllApplications($pdo) {
+    $sql = "SELECT * FROM job_applications
+            ORDER BY application_id DESC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getApplicationByID($pdo, $applicationID) {
+    $sql = "SELECT * FROM job_applications
+            WHERE application_id = ?";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$applicationID]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function updateApplication($pdo, $applicationID,
+    $firstName, $lastName, $email, $phone,
+    $education, $position, $skills, $experience) {
+
+    $sql = "UPDATE job_applications SET
+        first_name = ?,
+        last_name = ?,
+        email = ?,
+        phone = ?,
+        education = ?,
+        position = ?,
+        programming_skills = ?,
+        experience = ?
+        WHERE application_id = ?";
+
+    $stmt = $pdo->prepare($sql);
+
+    return $stmt->execute([
+        $firstName, $lastName, $email, $phone,
+        $education, $position, $skills, $experience,
+        $applicationID
+    ]);
+}
+
+function deleteApplication($pdo, $applicationID) {
+    $sql = "DELETE FROM job_applications
+            WHERE application_id = ?";
+
+    $stmt = $pdo->prepare($sql);
+
+    return $stmt->execute([$applicationID]);
+}
+
+?>
